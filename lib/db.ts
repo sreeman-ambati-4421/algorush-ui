@@ -1,15 +1,18 @@
-import { neon } from "@neondatabase/serverless";
+import postgres from "postgres";
 import { demoAccounts, demoMeta, demoHoldings, demoSummaryHistory, demoExitedStocks } from "./demoData";
 
-// Server-side only. Reads/writes Neon Postgres directly for everything except
+// Server-side only. Reads/writes Postgres directly for everything except
 // placing trades and computing scorecard metrics (see lib/tradeApi.ts) --
 // those go through the internal FastAPI service running on the bot host.
 //
 // DEMO_MODE: when no DATABASE_URL is configured yet (e.g. previewing the UI
-// before a Neon project exists), fall back to lib/demoData.ts instead of
+// before a database exists), fall back to lib/demoData.ts instead of
 // throwing. Remove once a real DATABASE_URL is always set.
 const DEMO_MODE = !process.env.DATABASE_URL;
-const sql = DEMO_MODE ? null : neon(process.env.DATABASE_URL!);
+// prepare: false -- required when DATABASE_URL points at a connection pooler
+// running in transaction mode (e.g. Supabase's pgbouncer on port 6543), which
+// doesn't support prepared statements.
+const sql = DEMO_MODE ? null : postgres(process.env.DATABASE_URL!, { ssl: "require", prepare: false });
 
 export type Strategy = "momentum" | "momentum_etf";
 

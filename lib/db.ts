@@ -12,7 +12,14 @@ const DEMO_MODE = !process.env.DATABASE_URL;
 // prepare: false -- required when DATABASE_URL points at a connection pooler
 // running in transaction mode (e.g. Supabase's pgbouncer on port 6543), which
 // doesn't support prepared statements.
-const sql = DEMO_MODE ? null : postgres(process.env.DATABASE_URL!, { ssl: "require", prepare: false });
+//
+// types.numeric -- the postgres package returns NUMERIC/DECIMAL columns as
+// strings by default (avoids float-precision loss), but every schema column
+// here (percentage, prices, amounts, etc.) is read as a plain JS number
+// throughout this codebase (e.g. Holding.percentage.toFixed(2)). Parse them
+// as floats at the driver level instead of touching every call site.
+const numeric = { to: 1700, from: [1700], serialize: (x: number) => String(x), parse: (x: string) => parseFloat(x) };
+const sql = DEMO_MODE ? null : postgres(process.env.DATABASE_URL!, { ssl: "require", prepare: false, types: { numeric } });
 
 export type Strategy = "momentum" | "momentum_etf";
 

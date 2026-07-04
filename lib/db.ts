@@ -19,7 +19,12 @@ const DEMO_MODE = !process.env.DATABASE_URL;
 // throughout this codebase (e.g. Holding.percentage.toFixed(2)). Parse them
 // as floats at the driver level instead of touching every call site.
 const numeric = { to: 1700, from: [1700], serialize: (x: number) => String(x), parse: (x: string) => parseFloat(x) };
-const sql = DEMO_MODE ? null : postgres(process.env.DATABASE_URL!, { ssl: "require", prepare: false, types: { numeric } });
+// types.date -- the postgres package parses DATE columns into JS Date
+// objects by default, but every date field here (entry_date, exit_date,
+// executed_date, date) is typed as string and rendered directly as JSX text
+// or passed to strftime-style formatting. Keep the raw "YYYY-MM-DD" string.
+const date = { to: 1082, from: [1082], serialize: (x: string) => x, parse: (x: string) => x };
+const sql = DEMO_MODE ? null : postgres(process.env.DATABASE_URL!, { ssl: "require", prepare: false, types: { numeric, date } });
 
 export type Strategy = "momentum" | "momentum_etf";
 

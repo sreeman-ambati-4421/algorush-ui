@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
+import StrategyNav from "@/components/StrategyNav";
 
 export default function StrategyLayout({
   children,
@@ -26,13 +27,7 @@ export default function StrategyLayout({
         </Link>
       </div>
       <h2 style={{ marginTop: 0 }}>{strategyLabel}</h2>
-      <nav className="nav-tabs">
-        <Link href={base}>Portfolio</Link>
-        <Link href={`${base}/history`}>History</Link>
-        <Link href={`${base}/scorecard`}>Scorecard</Link>
-        <Link href={`${base}/exits`}>Exits</Link>
-        <Link href={`${base}/schedule`}>Schedule</Link>
-      </nav>
+      <StrategyNav base={base} />
       {children}
     </div>
   );

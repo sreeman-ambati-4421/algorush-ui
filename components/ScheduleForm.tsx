@@ -62,7 +62,7 @@ export default function ScheduleForm({
 
       <div style={{ display: "flex", gap: 16, alignItems: "center", flexWrap: "wrap", marginBottom: 16 }}>
         <label style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-          Run time
+          Run time (IST)
           <input
             type="time"
             value={schedule.run_time}

@@ -173,6 +173,87 @@ td:first-child {
   border-bottom-color: #4472c4;
 }
 
+/* Hamburger/dropdown nav, swapped in below 640px for both the strategy tabs
+   and the account header links -- 5 tabs (or several accounts) wrapping to
+   multiple lines reads badly on a phone, so collapse into a toggled menu. */
+.nav-mobile {
+  display: none;
+  position: relative;
+}
+
+.nav-mobile-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  text-align: left;
+  padding: 10px 16px;
+  background: #151821;
+  border: 1px solid #22262f;
+  border-radius: 8px;
+  color: #e6e6e6;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.nav-mobile-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  z-index: 40;
+  background: #151821;
+  border: 1px solid #22262f;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.nav-mobile-menu a {
+  display: block;
+  padding: 10px 16px;
+  text-decoration: none;
+  color: #9ca3af;
+  border-bottom: 1px solid #22262f;
+  font-size: 14px;
+}
+
+.nav-mobile-menu a:last-child {
+  border-bottom: none;
+}
+
+.nav-mobile-menu a.active {
+  color: #e6e6e6;
+  background: #1c2029;
+}
+
+.header-mobile {
+  display: none;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+}
+
+.header-mobile .nav-mobile-toggle {
+  width: auto;
+  padding: 6px 12px;
+}
+
+@media (max-width: 640px) {
+  .nav-tabs-desktop,
+  .dashboard-header-accounts-desktop {
+    display: none;
+  }
+
+  .nav-mobile,
+  .header-mobile {
+    display: flex;
+  }
+
+  .nav-mobile {
+    margin-bottom: 20px;
+  }
+}
+
 button.primary {
   background: #4472c4;
   color: white;

@@ -62,7 +62,7 @@ export default function TradeModal({
         zIndex: 50,
       }}
     >
-      <div className="tile" style={{ width: 320 }}>
+      <div className="tile" style={{ width: "min(320px, 90vw)" }}>
         <h3 style={{ marginTop: 0 }}>Place manual order</h3>
         <label>Ticker (e.g. NSE:TCS)</label>
         <input

@@ -48,7 +48,7 @@ export default function AddFundsModal({ accountId, strategy }: { accountId: stri
         zIndex: 50,
       }}
     >
-      <div className="tile" style={{ width: 320 }}>
+      <div className="tile" style={{ width: "min(320px, 90vw)" }}>
         <h3 style={{ marginTop: 0 }}>Add funds manually</h3>
         <p style={{ fontSize: 13, color: "#9ca3af", marginTop: -8 }}>
           For capital you've already deposited with the broker (e.g. topping up after an

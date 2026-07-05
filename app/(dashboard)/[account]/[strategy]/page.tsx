@@ -35,52 +35,54 @@ export default async function PortfolioPage({
         </div>
       </div>
 
-      <table>
-        <thead>
-          <tr>
-            <th>Ticker</th>
-            <th>Shares</th>
-            <th>Buy Price</th>
-            <th>Current Price</th>
-            <th>Current Value</th>
-            <th>P&amp;L</th>
-            <th>%</th>
-            <th>Days</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          {holdings.map((h) => (
-            <tr key={h.ticker}>
-              <td>{h.ticker.replace("NSE:", "")}</td>
-              <td>{h.no_of_shares}</td>
-              <td>{h.buy_price}</td>
-              <td>{h.current_price}</td>
-              <td>{h.current_amount.toLocaleString()}</td>
-              <td className={h.profit_loss >= 0 ? "positive" : "negative"}>
-                {h.profit_loss.toLocaleString()}
-              </td>
-              <td className={h.percentage >= 0 ? "positive" : "negative"}>{h.percentage.toFixed(2)}%</td>
-              <td>{h.holding_days}</td>
-              <td>
-                <TradeModal
-                  accountId={params.account}
-                  strategy={params.strategy}
-                  defaultTicker={h.ticker}
-                  defaultSide="SELL"
-                />
-              </td>
-            </tr>
-          ))}
-          {holdings.length === 0 && (
+      <div className="table-wrap">
+        <table>
+          <thead>
             <tr>
-              <td colSpan={9} style={{ textAlign: "center", color: "#666" }}>
-                No open positions
-              </td>
+              <th>Ticker</th>
+              <th>Shares</th>
+              <th>Buy Price</th>
+              <th>Current Price</th>
+              <th>Current Value</th>
+              <th>P&amp;L</th>
+              <th>%</th>
+              <th>Days</th>
+              <th></th>
             </tr>
-          )}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {holdings.map((h) => (
+              <tr key={h.ticker}>
+                <td>{h.ticker.replace("NSE:", "")}</td>
+                <td>{h.no_of_shares}</td>
+                <td>{h.buy_price}</td>
+                <td>{h.current_price}</td>
+                <td>{h.current_amount.toLocaleString()}</td>
+                <td className={h.profit_loss >= 0 ? "positive" : "negative"}>
+                  {h.profit_loss.toLocaleString()}
+                </td>
+                <td className={h.percentage >= 0 ? "positive" : "negative"}>{h.percentage.toFixed(2)}%</td>
+                <td>{h.holding_days}</td>
+                <td>
+                  <TradeModal
+                    accountId={params.account}
+                    strategy={params.strategy}
+                    defaultTicker={h.ticker}
+                    defaultSide="SELL"
+                  />
+                </td>
+              </tr>
+            ))}
+            {holdings.length === 0 && (
+              <tr>
+                <td colSpan={9} style={{ textAlign: "center", color: "#666" }}>
+                  No open positions
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

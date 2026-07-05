@@ -18,16 +18,8 @@ export default async function DashboardLayout({ children }: { children: ReactNod
           DEMO MODE — sample data, no real database/broker connected
         </div>
       )}
-      <header
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          padding: "12px 24px",
-          borderBottom: "1px solid #22262f",
-        }}
-      >
-        <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
+      <header className="dashboard-header">
+        <div className="dashboard-header-accounts">
           <strong>AlgoRush</strong>
           {accounts.map((a) => (
             <Link key={a.userid} href={`/${a.userid}/momentum`} style={{ color: "#9ca3af" }}>
@@ -35,12 +27,12 @@ export default async function DashboardLayout({ children }: { children: ReactNod
             </Link>
           ))}
         </div>
-        <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
+        <div className="dashboard-header-user">
           <span style={{ color: "#9ca3af", fontSize: 13 }}>{session?.user?.email}</span>
           <SignOutButton />
         </div>
       </header>
-      <div style={{ padding: 24 }}>{children}</div>
+      <div className="dashboard-content">{children}</div>
     </div>
   );
 }

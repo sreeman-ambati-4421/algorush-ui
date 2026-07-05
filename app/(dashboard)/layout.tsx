@@ -9,15 +9,8 @@ export default async function DashboardLayout({ children }: { children: ReactNod
   const session = await getServerSession(authOptions);
   const accounts = await getAccounts();
 
-  const demoMode = !process.env.DATABASE_URL;
-
   return (
     <div>
-      {demoMode && (
-        <div style={{ background: "#7c3aed", color: "white", textAlign: "center", padding: "6px", fontSize: 13 }}>
-          DEMO MODE — sample data, no real database/broker connected
-        </div>
-      )}
       <header className="dashboard-header">
         <div className="dashboard-header-accounts">
           <strong>AlgoRush</strong>

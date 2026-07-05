@@ -1,15 +1,12 @@
 import type { Strategy } from "./db";
-import { demoScorecard } from "./demoData";
 
 // Server-side only helper for the internal FastAPI trade service that runs on
 // the bot host (Algo/api/trade_service.py). Never call this from client
 // components -- TRADE_API_SECRET must stay server-side.
-
-// DEMO_MODE: no trade service configured yet -- see lib/db.ts for the same
-// pattern. Trades are faked (never actually placed); scorecard returns
-// sample numbers.
-const DEMO_MODE = !process.env.TRADE_API_URL;
-const TRADE_API_URL = process.env.TRADE_API_URL!;
+if (!process.env.TRADE_API_URL) {
+  throw new Error("TRADE_API_URL is not set -- point it at the trade_service host.");
+}
+const TRADE_API_URL = process.env.TRADE_API_URL;
 const TRADE_API_SECRET = process.env.TRADE_API_SECRET!;
 
 function authHeaders() {
@@ -40,15 +37,6 @@ export interface TradeResult {
 }
 
 export async function placeTrade(req: TradeRequest): Promise<TradeResult> {
-  if (DEMO_MODE) {
-    return {
-      trade_id: 0,
-      status: "COMPLETE",
-      average_price: req.limit_price ?? 100,
-      filled_quantity: req.quantity,
-      status_message: "DEMO MODE -- no real order was placed",
-    };
-  }
   const res = await fetch(`${TRADE_API_URL}/trade`, {
     method: "POST",
     headers: authHeaders(),
@@ -75,9 +63,6 @@ export interface AddFundsResult {
 }
 
 export async function addFunds(req: AddFundsRequest): Promise<AddFundsResult> {
-  if (DEMO_MODE) {
-    return { cash_remaining: req.amount, additional_capital_added_today: true };
-  }
   const res = await fetch(`${TRADE_API_URL}/add-funds`, {
     method: "POST",
     headers: authHeaders(),
@@ -92,13 +77,72 @@ export async function addFunds(req: AddFundsRequest): Promise<AddFundsResult> {
 }
 
 export async function getScorecard(accountId: string, strategy: Strategy, initialCapital?: number) {
-  if (DEMO_MODE) return demoScorecard;
   const url = new URL(`${TRADE_API_URL}/scorecard/${accountId}/${strategy}`);
   if (initialCapital) url.searchParams.set("initial_capital", String(initialCapital));
   const res = await fetch(url, { headers: authHeaders(), cache: "no-store" });
   if (!res.ok) {
     const body = await res.text();
     throw new Error(`Scorecard API error ${res.status}: ${body}`);
+  }
+  return res.json();
+}
+
+export interface JobSchedule {
+  run_time: string; // "HH:MM"
+  enabled: boolean;
+  monday: boolean;
+  tuesday: boolean;
+  wednesday: boolean;
+  thursday: boolean;
+  friday: boolean;
+  saturday: boolean;
+  sunday: boolean;
+}
+
+export interface JobRun {
+  id: number;
+  started_at: string;
+  completed_at: string | null;
+  status: "RUNNING" | "SUCCESS" | "FAILED" | "SKIPPED";
+  message: string | null;
+}
+
+export async function getSchedule(accountId: string, strategy: Strategy): Promise<JobSchedule> {
+  const res = await fetch(`${TRADE_API_URL}/schedule/${accountId}/${strategy}`, {
+    headers: authHeaders(),
+    cache: "no-store",
+  });
+  if (!res.ok) {
+    const body = await res.text();
+    throw new Error(`Schedule API error ${res.status}: ${body}`);
+  }
+  return res.json();
+}
+
+export async function updateSchedule(
+  req: { account_id: string; strategy: Strategy } & JobSchedule
+): Promise<JobSchedule> {
+  const res = await fetch(`${TRADE_API_URL}/schedule`, {
+    method: "POST",
+    headers: authHeaders(),
+    body: JSON.stringify(req),
+    cache: "no-store",
+  });
+  if (!res.ok) {
+    const body = await res.text();
+    throw new Error(`Schedule API error ${res.status}: ${body}`);
+  }
+  return res.json();
+}
+
+export async function getRecentRuns(accountId: string, strategy: Strategy, limit = 5): Promise<JobRun[]> {
+  const res = await fetch(`${TRADE_API_URL}/runs/${accountId}/${strategy}?limit=${limit}`, {
+    headers: authHeaders(),
+    cache: "no-store",
+  });
+  if (!res.ok) {
+    const body = await res.text();
+    throw new Error(`Runs API error ${res.status}: ${body}`);
   }
   return res.json();
 }

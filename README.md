@@ -13,15 +13,14 @@ Python side (bots, DB schema, trade service) and the full setup order.
 
 ```
 npm install
-cp .env.example .env.local   # fill in real values, or leave unset for demo mode
+cp .env.example .env.local   # fill in real values
 npm run dev
 ```
 
-With no `DATABASE_URL` / `TRADE_API_URL` / `GOOGLE_CLIENT_ID` set, the app
-runs in **demo mode**: sample data, no login required, trades are faked. This
-is what renders if you just want to look at the UI before wiring up real
-infrastructure -- see `lib/demoData.ts` and the `DEMO_MODE` checks in
-`lib/db.ts`, `lib/tradeApi.ts`, and `middleware.ts`.
+`DATABASE_URL`, `TRADE_API_URL`, and `GOOGLE_CLIENT_ID`/`GOOGLE_CLIENT_SECRET`
+are all required -- the app throws at startup if `DATABASE_URL` or
+`TRADE_API_URL` is missing, and every route requires a signed-in,
+allow-listed Google account.
 
 ## Deploy
 

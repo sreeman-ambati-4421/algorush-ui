@@ -1,14 +1,11 @@
 import postgres from "postgres";
-import { demoAccounts, demoMeta, demoHoldings, demoSummaryHistory, demoExitedStocks } from "./demoData";
 
 // Server-side only. Reads/writes Postgres directly for everything except
 // placing trades and computing scorecard metrics (see lib/tradeApi.ts) --
 // those go through the internal FastAPI service running on the bot host.
-//
-// DEMO_MODE: when no DATABASE_URL is configured yet (e.g. previewing the UI
-// before a database exists), fall back to lib/demoData.ts instead of
-// throwing. Remove once a real DATABASE_URL is always set.
-const DEMO_MODE = !process.env.DATABASE_URL;
+if (!process.env.DATABASE_URL) {
+  throw new Error("DATABASE_URL is not set -- point it at your Postgres instance.");
+}
 // prepare: false -- required when DATABASE_URL points at a connection pooler
 // running in transaction mode (e.g. Supabase's pgbouncer on port 6543), which
 // doesn't support prepared statements.
@@ -24,7 +21,7 @@ const numeric = { to: 1700, from: [1700], serialize: (x: number) => String(x), p
 // executed_date, date) is typed as string and rendered directly as JSX text
 // or passed to strftime-style formatting. Keep the raw "YYYY-MM-DD" string.
 const date = { to: 1082, from: [1082], serialize: (x: string) => x, parse: (x: string) => x };
-const sql = DEMO_MODE ? null : postgres(process.env.DATABASE_URL!, { ssl: "require", prepare: false, types: { numeric, date } });
+const sql = postgres(process.env.DATABASE_URL, { ssl: "require", prepare: false, types: { numeric, date } });
 
 export type Strategy = "momentum" | "momentum_etf";
 
@@ -82,15 +79,13 @@ export interface ExitedStockRow {
 }
 
 export async function getAccounts(): Promise<Account[]> {
-  if (DEMO_MODE) return demoAccounts;
-  return (await sql!`
+  return (await sql`
     SELECT userid, client_name, trade_on, is_base FROM accounts ORDER BY client_name
   `) as unknown as Account[];
 }
 
 export async function getPortfolioMeta(accountId: string, strategy: Strategy): Promise<PortfolioMeta | null> {
-  if (DEMO_MODE) return demoMeta;
-  const rows = (await sql!`
+  const rows = (await sql`
     SELECT executed_date, cash_remaining, rebalance_counter
     FROM portfolio_meta WHERE account_id = ${accountId} AND strategy = ${strategy}
   `) as unknown as PortfolioMeta[];
@@ -98,8 +93,7 @@ export async function getPortfolioMeta(accountId: string, strategy: Strategy): P
 }
 
 export async function getHoldings(accountId: string, strategy: Strategy): Promise<Holding[]> {
-  if (DEMO_MODE) return demoHoldings;
-  return (await sql!`
+  return (await sql`
     SELECT ticker, entry_date, holding_days, no_of_shares, buy_price, buy_amount,
            current_price, current_amount, ema_100, profit_loss, percentage
     FROM portfolio_holdings
@@ -109,8 +103,7 @@ export async function getHoldings(accountId: string, strategy: Strategy): Promis
 }
 
 export async function getSummaryHistory(accountId: string, strategy: Strategy): Promise<SummaryRow[]> {
-  if (DEMO_MODE) return demoSummaryHistory;
-  return (await sql!`
+  return (await sql`
     SELECT date, no_of_holdings, invested_capital, holdings_value, cash_remaining,
            total_value_holdings, holding_values_diff, total_profit_loss
     FROM summary_history
@@ -120,8 +113,7 @@ export async function getSummaryHistory(accountId: string, strategy: Strategy): 
 }
 
 export async function getExitedStocks(accountId: string, strategy: Strategy): Promise<ExitedStockRow[]> {
-  if (DEMO_MODE) return demoExitedStocks;
-  return (await sql!`
+  return (await sql`
     SELECT ticker, entry_date, exit_date, holding_days, no_of_shares, buy_price, buy_amount,
            sell_price, sell_amount, profit_loss, percentage, exit_type
     FROM exited_stocks

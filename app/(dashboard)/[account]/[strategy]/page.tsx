@@ -83,6 +83,58 @@ export default async function PortfolioPage({
           </tbody>
         </table>
       </div>
+
+      <div className="cards">
+        {holdings.map((h) => (
+          <div key={h.ticker} className="tile">
+            <div className="card-header">
+              <span className="ticker">{h.ticker.replace("NSE:", "")}</span>
+              <span className={h.percentage >= 0 ? "positive" : "negative"} style={{ fontWeight: 700 }}>
+                {h.percentage.toFixed(2)}%
+              </span>
+            </div>
+            <div className="card-row">
+              <span className="label">Shares</span>
+              <span>{h.no_of_shares}</span>
+            </div>
+            <div className="card-row">
+              <span className="label">Buy Price</span>
+              <span>{h.buy_price}</span>
+            </div>
+            <div className="card-row">
+              <span className="label">Current Price</span>
+              <span>{h.current_price}</span>
+            </div>
+            <div className="card-row">
+              <span className="label">Current Value</span>
+              <span>{h.current_amount.toLocaleString()}</span>
+            </div>
+            <div className="card-row">
+              <span className="label">P&amp;L</span>
+              <span className={h.profit_loss >= 0 ? "positive" : "negative"}>
+                {h.profit_loss.toLocaleString()}
+              </span>
+            </div>
+            <div className="card-row">
+              <span className="label">Days</span>
+              <span>{h.holding_days}</span>
+            </div>
+            <div className="card-footer">
+              <TradeModal
+                accountId={params.account}
+                strategy={params.strategy}
+                defaultTicker={h.ticker}
+                defaultSide="SELL"
+              />
+            </div>
+          </div>
+        ))}
+        {holdings.length === 0 && (
+          <div className="tile" style={{ textAlign: "center", color: "#666" }}>
+            No open positions
+          </div>
+        )}
+      </div>
     </div>
   );
 }

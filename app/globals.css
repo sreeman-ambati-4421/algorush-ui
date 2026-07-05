@@ -45,6 +45,46 @@ td:first-child {
   min-width: 640px;
 }
 
+/* Card view: same data as the table, rendered as <div className="cards"> of
+   stacked <div className="tile"> rows instead. Hidden on desktop (the table
+   wins there); swaps in below 640px so mobile scrolls vertically through
+   readable cards instead of horizontally through a squeezed table. */
+.cards {
+  display: none;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #22262f;
+}
+
+.card-header .ticker {
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.card-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 3px 0;
+  font-size: 13px;
+}
+
+.card-row .label {
+  color: #9ca3af;
+}
+
+.card-footer {
+  margin-top: 10px;
+  text-align: right;
+}
+
 .positive {
   color: #34d399;
 }
@@ -110,6 +150,14 @@ td:first-child {
   td {
     padding: 6px 8px;
     font-size: 13px;
+  }
+
+  .table-wrap {
+    display: none;
+  }
+
+  .cards {
+    display: flex;
   }
 }
 

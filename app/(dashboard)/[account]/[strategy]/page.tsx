@@ -1,5 +1,6 @@
 import { getHoldings, getPortfolioMeta, Strategy } from "@/lib/db";
 import TradeModal from "@/components/TradeModal";
+import AddFundsModal from "@/components/AddFundsModal";
 
 export const dynamic = "force-dynamic";
 
@@ -22,7 +23,8 @@ export default async function PortfolioPage({
         </div>
         <div className="tile">
           <div style={{ color: "#9ca3af", fontSize: 13 }}>Cash Remaining</div>
-          <div style={{ fontSize: 24 }}>{"₹"}{(meta?.cash_remaining ?? 0).toLocaleString()}</div>
+          <div style={{ fontSize: 24, marginBottom: 8 }}>{"₹"}{(meta?.cash_remaining ?? 0).toLocaleString()}</div>
+          <AddFundsModal accountId={params.account} strategy={params.strategy} />
         </div>
         <div className="tile">
           <div style={{ color: "#9ca3af", fontSize: 13 }}>Rebalance In</div>

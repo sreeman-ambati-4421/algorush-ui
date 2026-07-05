@@ -62,6 +62,35 @@ export async function placeTrade(req: TradeRequest): Promise<TradeResult> {
   return res.json();
 }
 
+export interface AddFundsRequest {
+  account_id: string;
+  strategy: Strategy;
+  amount: number;
+  requested_by: string;
+}
+
+export interface AddFundsResult {
+  cash_remaining: number;
+  additional_capital_added_today: boolean;
+}
+
+export async function addFunds(req: AddFundsRequest): Promise<AddFundsResult> {
+  if (DEMO_MODE) {
+    return { cash_remaining: req.amount, additional_capital_added_today: true };
+  }
+  const res = await fetch(`${TRADE_API_URL}/add-funds`, {
+    method: "POST",
+    headers: authHeaders(),
+    body: JSON.stringify(req),
+    cache: "no-store",
+  });
+  if (!res.ok) {
+    const body = await res.text();
+    throw new Error(`Add funds API error ${res.status}: ${body}`);
+  }
+  return res.json();
+}
+
 export async function getScorecard(accountId: string, strategy: Strategy, initialCapital?: number) {
   if (DEMO_MODE) return demoScorecard;
   const url = new URL(`${TRADE_API_URL}/scorecard/${accountId}/${strategy}`);

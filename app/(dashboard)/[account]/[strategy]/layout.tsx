@@ -31,6 +31,7 @@ export default function StrategyLayout({
         <Link href={`${base}/history`}>History</Link>
         <Link href={`${base}/scorecard`}>Scorecard</Link>
         <Link href={`${base}/exits`}>Exits</Link>
+        <Link href={`${base}/schedule`}>Schedule</Link>
       </nav>
       {children}
     </div>

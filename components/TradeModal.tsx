@@ -44,53 +44,49 @@ export default function TradeModal({
 
   if (!open) {
     return (
-      <button className={`primary ${defaultSide === "SELL" ? "sell" : ""}`} onClick={() => setOpen(true)}>
+      <button
+        className={defaultSide === "SELL" ? "btn-danger btn-sm" : "btn-primary"}
+        onClick={() => setOpen(true)}
+      >
         {defaultSide ?? "Trade"}
       </button>
     );
   }
 
   return (
-    <div
-      style={{
-        position: "fixed",
-        inset: 0,
-        background: "rgba(0,0,0,0.6)",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        zIndex: 50,
-      }}
-    >
-      <div className="tile" style={{ width: "min(320px, 90vw)" }}>
-        <h3 style={{ marginTop: 0 }}>Place manual order</h3>
-        <label>Ticker (e.g. NSE:TCS)</label>
-        <input
-          value={ticker}
-          onChange={(e) => setTicker(e.target.value)}
-          style={{ width: "100%", marginBottom: 8, padding: 6 }}
-        />
-        <label>Side</label>
+    <div className="modal-overlay">
+      <div className="modal-panel">
+        <h3 className="mb-4 text-base font-semibold text-slate-50">Place manual order</h3>
+
+        <label className="field-label">Ticker (e.g. NSE:TCS)</label>
+        <input value={ticker} onChange={(e) => setTicker(e.target.value)} className="input mb-3" />
+
+        <label className="field-label">Side</label>
         <select
           value={side}
           onChange={(e) => setSide(e.target.value as "BUY" | "SELL")}
-          style={{ width: "100%", marginBottom: 8, padding: 6 }}
+          className="input mb-3"
         >
           <option value="BUY">BUY</option>
           <option value="SELL">SELL</option>
         </select>
-        <label>Quantity</label>
+
+        <label className="field-label">Quantity</label>
         <input
           type="number"
           min={1}
           value={quantity}
           onChange={(e) => setQuantity(parseInt(e.target.value, 10) || 1)}
-          style={{ width: "100%", marginBottom: 12, padding: 6 }}
+          className="input mb-4"
         />
-        {result && <p style={{ fontSize: 13 }}>{result}</p>}
-        <div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
-          <button onClick={() => setOpen(false)}>Close</button>
-          <button className="primary" disabled={submitting || !ticker} onClick={submit}>
+
+        {result && <p className="mb-3 text-sm text-slate-300">{result}</p>}
+
+        <div className="flex justify-end gap-2">
+          <button className="btn-ghost" onClick={() => setOpen(false)}>
+            Close
+          </button>
+          <button className="btn-primary" disabled={submitting || !ticker} onClick={submit}>
             {submitting ? "Placing..." : "Place order"}
           </button>
         </div>

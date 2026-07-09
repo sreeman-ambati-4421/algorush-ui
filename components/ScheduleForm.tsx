@@ -53,44 +53,56 @@ export default function ScheduleForm({
   }
 
   return (
-    <div className="tile">
-      <h3 style={{ marginTop: 0 }}>Bot schedule</h3>
-      <p style={{ fontSize: 13, color: "#9ca3af", marginTop: -8 }}>
+    <div className="card p-5 sm:p-6">
+      <h3 className="text-base font-semibold text-slate-50">Bot schedule</h3>
+      <p className="mb-5 mt-1 max-w-2xl text-sm text-slate-500">
         The bot host checks this frequently and only launches once, when the current time crosses
         run time on an enabled day.
       </p>
 
-      <div style={{ display: "flex", gap: 16, alignItems: "center", flexWrap: "wrap", marginBottom: 16 }}>
-        <label style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-          Run time (IST)
+      <div className="mb-5 flex flex-wrap items-end gap-6">
+        <label className="flex flex-col gap-1.5">
+          <span className="field-label mb-0">Run time (IST)</span>
           <input
             type="time"
             value={schedule.run_time}
             onChange={(e) => setSchedule((s) => ({ ...s, run_time: e.target.value }))}
-            style={{ padding: 6 }}
+            className="input w-auto"
           />
         </label>
-        <label style={{ display: "flex", alignItems: "center", gap: 6, marginTop: 18 }}>
+        <label className="mb-2 flex items-center gap-2 text-sm text-slate-300">
           <input
             type="checkbox"
             checked={schedule.enabled}
             onChange={() => setSchedule((s) => ({ ...s, enabled: !s.enabled }))}
+            className="h-4 w-4 rounded border-ink-border bg-ink-bg text-brand accent-brand"
           />
           Enabled
         </label>
       </div>
 
-      <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 16 }}>
-        {DAY_LABELS.map(({ key, label }) => (
-          <label key={key} style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 13 }}>
-            <input type="checkbox" checked={schedule[key]} onChange={() => toggleDay(key)} />
-            {label}
-          </label>
-        ))}
+      <div className="mb-5 flex flex-wrap gap-2">
+        {DAY_LABELS.map(({ key, label }) => {
+          const active = Boolean(schedule[key]);
+          return (
+            <button
+              key={key}
+              type="button"
+              onClick={() => toggleDay(key)}
+              className={
+                active
+                  ? "rounded-lg border border-brand/40 bg-brand-soft px-3 py-1.5 text-xs font-medium text-brand transition-colors"
+                  : "rounded-lg border border-ink-border bg-ink-raised/40 px-3 py-1.5 text-xs font-medium text-slate-500 transition-colors hover:text-slate-300"
+              }
+            >
+              {label}
+            </button>
+          );
+        })}
       </div>
 
-      {result && <p style={{ fontSize: 13 }}>{result}</p>}
-      <button className="primary" disabled={submitting} onClick={submit}>
+      {result && <p className="mb-3 text-sm text-slate-300">{result}</p>}
+      <button className="btn-primary" disabled={submitting} onClick={submit}>
         {submitting ? "Saving..." : "Save"}
       </button>
     </div>

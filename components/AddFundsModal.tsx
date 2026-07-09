@@ -32,41 +32,38 @@ export default function AddFundsModal({ accountId, strategy }: { accountId: stri
 
   if (!open) {
     return (
-      <button onClick={() => setOpen(true)}>Add Funds</button>
+      <button onClick={() => setOpen(true)} className="text-xs font-medium text-brand hover:text-brand-hover">
+        + Add funds
+      </button>
     );
   }
 
   return (
-    <div
-      style={{
-        position: "fixed",
-        inset: 0,
-        background: "rgba(0,0,0,0.6)",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        zIndex: 50,
-      }}
-    >
-      <div className="tile" style={{ width: "min(320px, 90vw)" }}>
-        <h3 style={{ marginTop: 0 }}>Add funds manually</h3>
-        <p style={{ fontSize: 13, color: "#9ca3af", marginTop: -8 }}>
-          For capital you've already deposited with the broker (e.g. topping up after an
-          insufficient-funds order failure) -- this only updates bookkeeping here, it does not move
+    <div className="modal-overlay">
+      <div className="modal-panel">
+        <h3 className="mb-1 text-base font-semibold text-slate-50">Add funds manually</h3>
+        <p className="mb-4 text-xs leading-relaxed text-slate-500">
+          For capital you&apos;ve already deposited with the broker (e.g. topping up after an
+          insufficient-funds order failure) — this only updates bookkeeping here, it does not move
           any real money.
         </p>
-        <label>Amount (₹)</label>
+
+        <label className="field-label">Amount (₹)</label>
         <input
           type="number"
           min={1}
           value={amount}
           onChange={(e) => setAmount(parseFloat(e.target.value) || 0)}
-          style={{ width: "100%", marginBottom: 12, padding: 6 }}
+          className="input mb-4"
         />
-        {result && <p style={{ fontSize: 13 }}>{result}</p>}
-        <div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
-          <button onClick={() => setOpen(false)}>Close</button>
-          <button className="primary" disabled={submitting || amount <= 0} onClick={submit}>
+
+        {result && <p className="mb-3 text-sm text-slate-300">{result}</p>}
+
+        <div className="flex justify-end gap-2">
+          <button className="btn-ghost" onClick={() => setOpen(false)}>
+            Close
+          </button>
+          <button className="btn-primary" disabled={submitting || amount <= 0} onClick={submit}>
             {submitting ? "Adding..." : "Add funds"}
           </button>
         </div>

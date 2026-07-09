@@ -7,91 +7,85 @@ export default async function ExitsPage({ params }: { params: { account: string;
 
   return (
     <>
-    <div className="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>Ticker</th>
-            <th>Entry</th>
-            <th>Exit</th>
-            <th>Days</th>
-            <th>Buy</th>
-            <th>Sell</th>
-            <th>P&amp;L</th>
-            <th>%</th>
-            <th>Exit Type</th>
-          </tr>
-        </thead>
-        <tbody>
-          {exits.map((e, i) => (
-            <tr key={`${e.ticker}-${e.exit_date}-${i}`}>
-              <td>{e.ticker.replace("NSE:", "")}</td>
-              <td>{e.entry_date}</td>
-              <td>{e.exit_date}</td>
-              <td>{e.holding_days}</td>
-              <td>{e.buy_amount.toLocaleString()}</td>
-              <td>{e.sell_amount.toLocaleString()}</td>
-              <td className={e.profit_loss >= 0 ? "positive" : "negative"}>{e.profit_loss.toLocaleString()}</td>
-              <td className={e.percentage >= 0 ? "positive" : "negative"}>{e.percentage.toFixed(2)}%</td>
-              <td>{e.exit_type}</td>
-            </tr>
-          ))}
-          {exits.length === 0 && (
+      <div className="card hidden overflow-x-auto md:block">
+        <table className="data-table">
+          <thead>
             <tr>
-              <td colSpan={9} style={{ textAlign: "center", color: "#666" }}>
-                No exits recorded yet
-              </td>
+              <th>Ticker</th>
+              <th>Entry</th>
+              <th>Exit</th>
+              <th>Days</th>
+              <th>Buy</th>
+              <th>Sell</th>
+              <th>P&amp;L</th>
+              <th>%</th>
+              <th>Exit Type</th>
             </tr>
-          )}
-        </tbody>
-      </table>
-    </div>
+          </thead>
+          <tbody>
+            {exits.map((e, i) => (
+              <tr key={`${e.ticker}-${e.exit_date}-${i}`}>
+                <td>{e.ticker.replace("NSE:", "")}</td>
+                <td>{e.entry_date}</td>
+                <td>{e.exit_date}</td>
+                <td>{e.holding_days}</td>
+                <td>{e.buy_amount.toLocaleString()}</td>
+                <td>{e.sell_amount.toLocaleString()}</td>
+                <td className={e.profit_loss >= 0 ? "positive" : "negative"}>{e.profit_loss.toLocaleString()}</td>
+                <td className={e.percentage >= 0 ? "positive" : "negative"}>{e.percentage.toFixed(2)}%</td>
+                <td>
+                  <span className="badge-neutral">{e.exit_type}</span>
+                </td>
+              </tr>
+            ))}
+            {exits.length === 0 && (
+              <tr>
+                <td colSpan={9} className="!text-center text-slate-500">
+                  No exits recorded yet
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
 
-    <div className="cards">
-      {exits.map((e, i) => (
-        <div key={`${e.ticker}-${e.exit_date}-${i}-card`} className="tile">
-          <div className="card-header">
-            <span className="ticker">{e.ticker.replace("NSE:", "")}</span>
-            <span className={e.percentage >= 0 ? "positive" : "negative"} style={{ fontWeight: 700 }}>
-              {e.percentage.toFixed(2)}%
-            </span>
+      <div className="flex flex-col gap-3 md:hidden">
+        {exits.map((e, i) => (
+          <div key={`${e.ticker}-${e.exit_date}-${i}-card`} className="card p-4">
+            <div className="mb-3 flex items-baseline justify-between border-b border-ink-border pb-3">
+              <span className="font-semibold text-slate-50">{e.ticker.replace("NSE:", "")}</span>
+              <span className={`font-bold ${e.percentage >= 0 ? "positive" : "negative"}`}>
+                {e.percentage.toFixed(2)}%
+              </span>
+            </div>
+            <div className="space-y-1.5 text-sm">
+              <Row label="Entry" value={e.entry_date} />
+              <Row label="Exit" value={e.exit_date} />
+              <Row label="Days" value={e.holding_days} />
+              <Row label="Buy" value={e.buy_amount.toLocaleString()} />
+              <Row label="Sell" value={e.sell_amount.toLocaleString()} />
+              <Row
+                label="P&L"
+                value={e.profit_loss.toLocaleString()}
+                className={e.profit_loss >= 0 ? "positive" : "negative"}
+              />
+              <Row label="Exit Type" value={e.exit_type} />
+            </div>
           </div>
-          <div className="card-row">
-            <span className="label">Entry</span>
-            <span>{e.entry_date}</span>
-          </div>
-          <div className="card-row">
-            <span className="label">Exit</span>
-            <span>{e.exit_date}</span>
-          </div>
-          <div className="card-row">
-            <span className="label">Days</span>
-            <span>{e.holding_days}</span>
-          </div>
-          <div className="card-row">
-            <span className="label">Buy</span>
-            <span>{e.buy_amount.toLocaleString()}</span>
-          </div>
-          <div className="card-row">
-            <span className="label">Sell</span>
-            <span>{e.sell_amount.toLocaleString()}</span>
-          </div>
-          <div className="card-row">
-            <span className="label">P&amp;L</span>
-            <span className={e.profit_loss >= 0 ? "positive" : "negative"}>{e.profit_loss.toLocaleString()}</span>
-          </div>
-          <div className="card-row">
-            <span className="label">Exit Type</span>
-            <span>{e.exit_type}</span>
-          </div>
-        </div>
-      ))}
-      {exits.length === 0 && (
-        <div className="tile" style={{ textAlign: "center", color: "#666" }}>
-          No exits recorded yet
-        </div>
-      )}
-    </div>
+        ))}
+        {exits.length === 0 && (
+          <div className="card p-6 text-center text-slate-500">No exits recorded yet</div>
+        )}
+      </div>
     </>
+  );
+}
+
+function Row({ label, value, className }: { label: string; value: string | number; className?: string }) {
+  return (
+    <div className="flex justify-between">
+      <span className="text-slate-500">{label}</span>
+      <span className={className}>{value}</span>
+    </div>
   );
 }

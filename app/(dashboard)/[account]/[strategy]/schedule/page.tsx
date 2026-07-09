@@ -12,10 +12,11 @@ function formatDateTime(iso: string) {
   });
 }
 
-function statusClass(status: string) {
-  if (status === "SUCCESS") return "positive";
-  if (status === "FAILED") return "negative";
-  return undefined;
+function statusBadgeClass(status: string) {
+  if (status === "SUCCESS") return "badge-positive";
+  if (status === "FAILED") return "badge-negative";
+  if (status === "RUNNING") return "badge-warning";
+  return "badge-neutral";
 }
 
 export default async function SchedulePage({
@@ -30,20 +31,20 @@ export default async function SchedulePage({
 
   return (
     <div>
-      <div style={{ marginBottom: 24 }}>
+      <div className="mb-8">
         <ScheduleForm accountId={params.account} strategy={params.strategy} initial={schedule} />
       </div>
 
-      <h3>Latest runs</h3>
+      <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-400">Latest runs</h3>
 
-      <div className="table-wrap">
-        <table>
+      <div className="card hidden overflow-x-auto md:block">
+        <table className="data-table">
           <thead>
             <tr>
               <th>Started</th>
               <th>Completed</th>
               <th>Status</th>
-              <th>Message</th>
+              <th className="text-left">Message</th>
             </tr>
           </thead>
           <tbody>
@@ -51,13 +52,15 @@ export default async function SchedulePage({
               <tr key={r.id}>
                 <td>{formatDateTime(r.started_at)}</td>
                 <td>{r.completed_at ? formatDateTime(r.completed_at) : "-"}</td>
-                <td className={statusClass(r.status)}>{r.status}</td>
-                <td style={{ textAlign: "left", whiteSpace: "normal" }}>{r.message ?? "-"}</td>
+                <td>
+                  <span className={statusBadgeClass(r.status)}>{r.status}</span>
+                </td>
+                <td className="!text-left whitespace-normal text-slate-400">{r.message ?? "-"}</td>
               </tr>
             ))}
             {runs.length === 0 && (
               <tr>
-                <td colSpan={4} style={{ textAlign: "center", color: "#666" }}>
+                <td colSpan={4} className="!text-center text-slate-500">
                   No runs recorded yet
                 </td>
               </tr>
@@ -66,28 +69,22 @@ export default async function SchedulePage({
         </table>
       </div>
 
-      <div className="cards">
+      <div className="flex flex-col gap-3 md:hidden">
         {runs.map((r) => (
-          <div key={r.id} className="tile">
-            <div className="card-header">
-              <span className="ticker">{formatDateTime(r.started_at)}</span>
-              <span className={statusClass(r.status)} style={{ fontWeight: 700 }}>
-                {r.status}
-              </span>
+          <div key={r.id} className="card p-4">
+            <div className="mb-2 flex items-center justify-between">
+              <span className="text-sm font-medium text-slate-200">{formatDateTime(r.started_at)}</span>
+              <span className={statusBadgeClass(r.status)}>{r.status}</span>
             </div>
-            <div className="card-row">
-              <span className="label">Completed</span>
-              <span>{r.completed_at ? formatDateTime(r.completed_at) : "-"}</span>
+            <div className="flex justify-between text-sm">
+              <span className="text-slate-500">Completed</span>
+              <span className="text-slate-300">{r.completed_at ? formatDateTime(r.completed_at) : "-"}</span>
             </div>
-            {r.message && (
-              <div style={{ marginTop: 8, fontSize: 13, color: "#9ca3af" }}>{r.message}</div>
-            )}
+            {r.message && <div className="mt-2 text-sm text-slate-500">{r.message}</div>}
           </div>
         ))}
         {runs.length === 0 && (
-          <div className="tile" style={{ textAlign: "center", color: "#666" }}>
-            No runs recorded yet
-          </div>
+          <div className="card p-6 text-center text-slate-500">No runs recorded yet</div>
         )}
       </div>
     </div>

@@ -16,27 +16,29 @@ export default async function PortfolioPage({
 
   return (
     <div>
-      <div className="tile-grid">
-        <div className="tile">
-          <div style={{ color: "#9ca3af", fontSize: 13 }}>Holdings</div>
-          <div style={{ fontSize: 24 }}>{holdings.length}</div>
+      <div className="mb-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
+        <div className="stat-tile">
+          <span className="stat-label">Holdings</span>
+          <span className="stat-value">{holdings.length}</span>
         </div>
-        <div className="tile">
-          <div style={{ color: "#9ca3af", fontSize: 13 }}>Cash Remaining</div>
-          <div style={{ fontSize: 24, marginBottom: 8 }}>{"₹"}{(meta?.cash_remaining ?? 0).toLocaleString()}</div>
-          <AddFundsModal accountId={params.account} strategy={params.strategy} />
+        <div className="stat-tile">
+          <span className="stat-label">Cash Remaining</span>
+          <span className="stat-value">₹{(meta?.cash_remaining ?? 0).toLocaleString()}</span>
+          <div className="mt-1">
+            <AddFundsModal accountId={params.account} strategy={params.strategy} />
+          </div>
         </div>
-        <div className="tile">
-          <div style={{ color: "#9ca3af", fontSize: 13 }}>Rebalance In</div>
-          <div style={{ fontSize: 24 }}>{meta?.rebalance_counter ?? "-"} day(s)</div>
+        <div className="stat-tile">
+          <span className="stat-label">Rebalance In</span>
+          <span className="stat-value">{meta?.rebalance_counter ?? "-"} day(s)</span>
         </div>
-        <div className="tile" style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <div className="stat-tile items-center justify-center">
           <TradeModal accountId={params.account} strategy={params.strategy} defaultSide="BUY" />
         </div>
       </div>
 
-      <div className="table-wrap">
-        <table>
+      <div className="card hidden overflow-x-auto md:block">
+        <table className="data-table">
           <thead>
             <tr>
               <th>Ticker</th>
@@ -75,7 +77,7 @@ export default async function PortfolioPage({
             ))}
             {holdings.length === 0 && (
               <tr>
-                <td colSpan={9} style={{ textAlign: "center", color: "#666" }}>
+                <td colSpan={9} className="!text-center text-slate-500">
                   No open positions
                 </td>
               </tr>
@@ -84,42 +86,28 @@ export default async function PortfolioPage({
         </table>
       </div>
 
-      <div className="cards">
+      <div className="flex flex-col gap-3 md:hidden">
         {holdings.map((h) => (
-          <div key={h.ticker} className="tile">
-            <div className="card-header">
-              <span className="ticker">{h.ticker.replace("NSE:", "")}</span>
-              <span className={h.percentage >= 0 ? "positive" : "negative"} style={{ fontWeight: 700 }}>
+          <div key={h.ticker} className="card p-4">
+            <div className="mb-3 flex items-baseline justify-between border-b border-ink-border pb-3">
+              <span className="font-semibold text-slate-50">{h.ticker.replace("NSE:", "")}</span>
+              <span className={`font-bold ${h.percentage >= 0 ? "positive" : "negative"}`}>
                 {h.percentage.toFixed(2)}%
               </span>
             </div>
-            <div className="card-row">
-              <span className="label">Shares</span>
-              <span>{h.no_of_shares}</span>
+            <div className="space-y-1.5 text-sm">
+              <Row label="Shares" value={h.no_of_shares} />
+              <Row label="Buy Price" value={h.buy_price} />
+              <Row label="Current Price" value={h.current_price} />
+              <Row label="Current Value" value={h.current_amount.toLocaleString()} />
+              <Row
+                label="P&L"
+                value={h.profit_loss.toLocaleString()}
+                className={h.profit_loss >= 0 ? "positive" : "negative"}
+              />
+              <Row label="Days" value={h.holding_days} />
             </div>
-            <div className="card-row">
-              <span className="label">Buy Price</span>
-              <span>{h.buy_price}</span>
-            </div>
-            <div className="card-row">
-              <span className="label">Current Price</span>
-              <span>{h.current_price}</span>
-            </div>
-            <div className="card-row">
-              <span className="label">Current Value</span>
-              <span>{h.current_amount.toLocaleString()}</span>
-            </div>
-            <div className="card-row">
-              <span className="label">P&amp;L</span>
-              <span className={h.profit_loss >= 0 ? "positive" : "negative"}>
-                {h.profit_loss.toLocaleString()}
-              </span>
-            </div>
-            <div className="card-row">
-              <span className="label">Days</span>
-              <span>{h.holding_days}</span>
-            </div>
-            <div className="card-footer">
+            <div className="mt-3 text-right">
               <TradeModal
                 accountId={params.account}
                 strategy={params.strategy}
@@ -130,11 +118,18 @@ export default async function PortfolioPage({
           </div>
         ))}
         {holdings.length === 0 && (
-          <div className="tile" style={{ textAlign: "center", color: "#666" }}>
-            No open positions
-          </div>
+          <div className="card p-6 text-center text-slate-500">No open positions</div>
         )}
       </div>
+    </div>
+  );
+}
+
+function Row({ label, value, className }: { label: string; value: string | number; className?: string }) {
+  return (
+    <div className="flex justify-between">
+      <span className="text-slate-500">{label}</span>
+      <span className={className}>{value}</span>
     </div>
   );
 }

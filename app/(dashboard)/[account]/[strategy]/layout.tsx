@@ -14,19 +14,22 @@ export default function StrategyLayout({
 
   return (
     <div>
-      <div style={{ display: "flex", gap: 8, marginBottom: 8 }}>
-        <Link href={`/${params.account}/momentum`} style={{ fontWeight: params.strategy === "momentum" ? 700 : 400 }}>
+      <div className="mb-1 flex items-center gap-2 text-xs">
+        <Link
+          href={`/${params.account}/momentum`}
+          className={params.strategy === "momentum" ? "font-semibold text-slate-100" : "text-slate-500 hover:text-slate-300"}
+        >
           Momentum
         </Link>
-        <span style={{ color: "#444" }}>|</span>
+        <span className="text-slate-700">/</span>
         <Link
           href={`/${params.account}/momentum_etf`}
-          style={{ fontWeight: params.strategy === "momentum_etf" ? 700 : 400 }}
+          className={params.strategy === "momentum_etf" ? "font-semibold text-slate-100" : "text-slate-500 hover:text-slate-300"}
         >
           Momentum ETF
         </Link>
       </div>
-      <h2 style={{ marginTop: 0 }}>{strategyLabel}</h2>
+      <h2 className="mb-5 text-2xl font-semibold text-slate-50">{strategyLabel}</h2>
       <StrategyNav base={base} />
       {children}
     </div>

@@ -7,27 +7,27 @@ export default async function HistoryPage({ params }: { params: { account: strin
   const rows = await getSummaryHistory(params.account, params.strategy);
 
   if (rows.length === 0) {
-    return <p style={{ color: "#666" }}>No summary history yet.</p>;
+    return <p className="text-slate-500">No summary history yet.</p>;
   }
 
   const latest = rows[rows.length - 1];
 
   return (
     <div>
-      <div className="tile-grid">
-        <div className="tile">
-          <div style={{ color: "#9ca3af", fontSize: 13 }}>Total Value</div>
-          <div style={{ fontSize: 24 }}>{"₹"}{latest.total_value_holdings.toLocaleString()}</div>
+      <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
+        <div className="stat-tile">
+          <span className="stat-label">Total Value</span>
+          <span className="stat-value">₹{latest.total_value_holdings.toLocaleString()}</span>
         </div>
-        <div className="tile">
-          <div style={{ color: "#9ca3af", fontSize: 13 }}>Invested Capital</div>
-          <div style={{ fontSize: 24 }}>{"₹"}{latest.invested_capital.toLocaleString()}</div>
+        <div className="stat-tile">
+          <span className="stat-label">Invested Capital</span>
+          <span className="stat-value">₹{latest.invested_capital.toLocaleString()}</span>
         </div>
-        <div className="tile">
-          <div style={{ color: "#9ca3af", fontSize: 13 }}>Total P&amp;L</div>
-          <div className={latest.total_profit_loss >= 0 ? "positive" : "negative"} style={{ fontSize: 24 }}>
-            {"₹"}{latest.total_profit_loss.toLocaleString()}
-          </div>
+        <div className="stat-tile">
+          <span className="stat-label">Total P&amp;L</span>
+          <span className={`stat-value ${latest.total_profit_loss >= 0 ? "positive" : "negative"}`}>
+            ₹{latest.total_profit_loss.toLocaleString()}
+          </span>
         </div>
       </div>
       <EquityCurveChart data={rows} />

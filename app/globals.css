@@ -1,269 +1,143 @@
-* {
-  box-sizing: border-box;
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  background: #0b0d12;
-  color: #e6e6e6;
-}
-
-a {
-  color: inherit;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 14px;
-}
-
-th,
-td {
-  text-align: right;
-  padding: 8px 12px;
-  border-bottom: 1px solid #22262f;
-  white-space: nowrap;
-}
-
-th:first-child,
-td:first-child {
-  text-align: left;
-}
-
-/* Wrap every data table in <div className="table-wrap"> so wide tables
-   (11+ columns on holdings/exits) scroll horizontally within themselves
-   instead of forcing the whole page to scroll sideways on mobile. */
-.table-wrap {
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  margin: 0 -4px;
-}
-
-.table-wrap table {
-  min-width: 640px;
-}
-
-/* Card view: same data as the table, rendered as <div className="cards"> of
-   stacked <div className="tile"> rows instead. Hidden on desktop (the table
-   wins there); swaps in below 640px so mobile scrolls vertically through
-   readable cards instead of horizontally through a squeezed table. */
-.cards {
-  display: none;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  margin-bottom: 8px;
-  padding-bottom: 8px;
-  border-bottom: 1px solid #22262f;
-}
-
-.card-header .ticker {
-  font-weight: 700;
-  font-size: 15px;
-}
-
-.card-row {
-  display: flex;
-  justify-content: space-between;
-  padding: 3px 0;
-  font-size: 13px;
-}
-
-.card-row .label {
-  color: #9ca3af;
-}
-
-.card-footer {
-  margin-top: 10px;
-  text-align: right;
-}
-
-.positive {
-  color: #34d399;
-}
-
-.negative {
-  color: #f87171;
-}
-
-.tile {
-  background: #151821;
-  border: 1px solid #22262f;
-  border-radius: 8px;
-  padding: 16px;
-}
-
-.tile-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 12px;
-  margin-bottom: 24px;
-}
-
-.nav-tabs {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-  border-bottom: 1px solid #22262f;
-  margin-bottom: 20px;
-}
-
-.dashboard-header {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 12px 24px;
-  border-bottom: 1px solid #22262f;
-}
-
-.dashboard-header-accounts,
-.dashboard-header-user {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-  align-items: center;
-}
-
-.dashboard-content {
-  padding: 24px;
-}
-
-@media (max-width: 640px) {
-  .dashboard-header {
-    padding: 12px 16px;
+@layer base {
+  * {
+    @apply border-ink-border;
   }
 
-  .dashboard-content {
-    padding: 16px 12px;
+  html {
+    color-scheme: dark;
   }
 
-  th,
-  td {
-    padding: 6px 8px;
-    font-size: 13px;
+  body {
+    @apply bg-ink-bg text-slate-100 antialiased;
+    background-image: radial-gradient(circle at 15% -10%, rgba(59, 130, 246, 0.08), transparent 40%),
+      radial-gradient(circle at 85% 0%, rgba(52, 211, 153, 0.05), transparent 35%);
+    background-attachment: fixed;
   }
 
-  .table-wrap {
-    display: none;
+  ::selection {
+    @apply bg-brand/30 text-white;
   }
 
-  .cards {
-    display: flex;
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-ink-raised rounded-full border-2 border-ink-bg;
   }
 }
 
-.nav-tabs a {
-  padding: 10px 16px;
-  text-decoration: none;
-  color: #9ca3af;
-  border-bottom: 2px solid transparent;
-}
-
-.nav-tabs a.active {
-  color: #e6e6e6;
-  border-bottom-color: #4472c4;
-}
-
-/* Hamburger/dropdown nav, swapped in below 640px for both the strategy tabs
-   and the account header links -- 5 tabs (or several accounts) wrapping to
-   multiple lines reads badly on a phone, so collapse into a toggled menu. */
-.nav-mobile {
-  display: none;
-  position: relative;
-}
-
-.nav-mobile-toggle {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  width: 100%;
-  text-align: left;
-  padding: 10px 16px;
-  background: #151821;
-  border: 1px solid #22262f;
-  border-radius: 8px;
-  color: #e6e6e6;
-  font-size: 14px;
-  cursor: pointer;
-}
-
-.nav-mobile-menu {
-  position: absolute;
-  top: calc(100% + 4px);
-  left: 0;
-  right: 0;
-  z-index: 40;
-  background: #151821;
-  border: 1px solid #22262f;
-  border-radius: 8px;
-  overflow: hidden;
-}
-
-.nav-mobile-menu a {
-  display: block;
-  padding: 10px 16px;
-  text-decoration: none;
-  color: #9ca3af;
-  border-bottom: 1px solid #22262f;
-  font-size: 14px;
-}
-
-.nav-mobile-menu a:last-child {
-  border-bottom: none;
-}
-
-.nav-mobile-menu a.active {
-  color: #e6e6e6;
-  background: #1c2029;
-}
-
-.header-mobile {
-  display: none;
-  align-items: center;
-  gap: 10px;
-  position: relative;
-}
-
-.header-mobile .nav-mobile-toggle {
-  width: auto;
-  padding: 6px 12px;
-}
-
-@media (max-width: 640px) {
-  .nav-tabs-desktop,
-  .dashboard-header-accounts-desktop {
-    display: none;
+@layer components {
+  .card {
+    @apply rounded-2xl border border-ink-border bg-ink-surface shadow-card;
   }
 
-  .nav-mobile,
-  .header-mobile {
-    display: flex;
+  .stat-tile {
+    @apply card flex flex-col gap-1.5 p-5;
   }
 
-  .nav-mobile {
-    margin-bottom: 20px;
+  .stat-label {
+    @apply text-xs font-medium uppercase tracking-wider text-slate-500;
   }
-}
 
-button.primary {
-  background: #4472c4;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  padding: 8px 16px;
-  cursor: pointer;
-  font-size: 14px;
-}
+  .stat-value {
+    @apply text-2xl font-semibold tabular-nums text-slate-50;
+  }
 
-button.sell {
-  background: #b91c1c;
+  .btn {
+    @apply inline-flex items-center justify-center gap-1.5 whitespace-nowrap rounded-lg px-4 py-2 text-sm font-medium transition-colors duration-150 disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  .btn-primary {
+    @apply btn bg-brand text-white shadow-sm hover:bg-brand-hover;
+  }
+
+  .btn-danger {
+    @apply btn bg-negative/90 text-white shadow-sm hover:bg-negative;
+  }
+
+  .btn-ghost {
+    @apply btn border border-ink-border bg-ink-raised/60 text-slate-200 hover:bg-ink-raised;
+  }
+
+  .btn-sm {
+    @apply px-3 py-1.5 text-xs;
+  }
+
+  .field-label {
+    @apply mb-1.5 block text-xs font-medium text-slate-400;
+  }
+
+  .input {
+    @apply w-full rounded-lg border border-ink-border bg-ink-bg/70 px-3 py-2 text-sm text-slate-100 outline-none transition placeholder:text-slate-600 focus:border-brand focus:ring-2 focus:ring-brand/25;
+  }
+
+  .badge {
+    @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium;
+  }
+
+  .badge-positive {
+    @apply badge bg-positive-soft text-positive;
+  }
+
+  .badge-negative {
+    @apply badge bg-negative-soft text-negative;
+  }
+
+  .badge-warning {
+    @apply badge bg-warning-soft text-warning;
+  }
+
+  .badge-neutral {
+    @apply badge bg-ink-raised text-slate-400;
+  }
+
+  .positive {
+    @apply text-positive;
+  }
+
+  .negative {
+    @apply text-negative;
+  }
+
+  .data-table {
+    @apply w-full border-collapse text-sm;
+  }
+
+  .data-table th {
+    @apply sticky top-0 border-b border-ink-border bg-ink-surface px-4 py-3 text-right text-xs font-medium uppercase tracking-wide text-slate-500 first:text-left;
+  }
+
+  .data-table td {
+    @apply border-b border-ink-border/70 px-4 py-3 text-right tabular-nums text-slate-200 first:text-left first:font-medium first:text-slate-50;
+  }
+
+  .data-table tbody tr {
+    @apply transition-colors hover:bg-white/[0.03];
+  }
+
+  .nav-pill {
+    @apply rounded-full px-4 py-1.5 text-sm font-medium text-slate-400 transition-colors hover:text-slate-200;
+  }
+
+  .nav-pill-active {
+    @apply nav-pill bg-brand-soft text-brand hover:text-brand;
+  }
+
+  .modal-overlay {
+    @apply fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm animate-fade-in;
+  }
+
+  .modal-panel {
+    @apply card w-[min(360px,90vw)] animate-scale-in p-6 shadow-popover;
+  }
 }

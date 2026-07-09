@@ -8,7 +8,11 @@ export default async function RootPage() {
   const accounts = await getAccounts();
   const first = accounts.find((a) => a.is_base) ?? accounts[0];
   if (!first) {
-    return <main style={{ padding: 40 }}>No accounts found yet -- run the migration script first.</main>;
+    return (
+      <main className="flex min-h-screen items-center justify-center p-10 text-center text-slate-500">
+        No accounts found yet -- run the migration script first.
+      </main>
+    );
   }
   redirect(`/${first.userid}/momentum`);
 }

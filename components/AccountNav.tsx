@@ -8,31 +8,50 @@ export default function AccountNav({ accounts }: { accounts: Account[] }) {
   const [open, setOpen] = useState(false);
 
   return (
-    <>
-      <div className="dashboard-header-accounts dashboard-header-accounts-desktop">
-        <strong>AlgoRush</strong>
+    <div className="flex items-center gap-2">
+      <Link href="/" className="mr-1 flex items-center gap-2">
+        <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-brand-soft text-sm font-bold text-brand">
+          A
+        </span>
+        <span className="hidden text-sm font-semibold text-slate-100 sm:inline">AlgoRush</span>
+      </Link>
+
+      <div className="hidden items-center gap-1 sm:flex">
         {accounts.map((a) => (
-          <Link key={a.userid} href={`/${a.userid}/momentum`} style={{ color: "#9ca3af" }}>
+          <Link
+            key={a.userid}
+            href={`/${a.userid}/momentum`}
+            className="rounded-lg px-3 py-1.5 text-sm text-slate-400 transition-colors hover:bg-ink-raised hover:text-slate-100"
+          >
             {a.client_name}
           </Link>
         ))}
       </div>
 
-      <div className="header-mobile">
-        <strong>AlgoRush</strong>
-        <button className="nav-mobile-toggle" onClick={() => setOpen((o) => !o)} aria-label="Accounts menu">
-          ☰
+      <div className="relative sm:hidden">
+        <button
+          className="btn-ghost btn-sm gap-2"
+          onClick={() => setOpen((o) => !o)}
+          aria-label="Accounts menu"
+        >
+          <span>☰</span>
+          <span>Accounts</span>
         </button>
         {open && (
-          <div className="nav-mobile-menu">
+          <div className="animate-scale-in card absolute left-0 top-[calc(100%+6px)] z-40 min-w-[180px] overflow-hidden p-1">
             {accounts.map((a) => (
-              <Link key={a.userid} href={`/${a.userid}/momentum`} onClick={() => setOpen(false)}>
+              <Link
+                key={a.userid}
+                href={`/${a.userid}/momentum`}
+                onClick={() => setOpen(false)}
+                className="block rounded-lg px-3 py-2 text-sm text-slate-300 hover:bg-ink-raised hover:text-slate-100"
+              >
                 {a.client_name}
               </Link>
             ))}
           </div>
         )}
       </div>
-    </>
+    </div>
   );
 }

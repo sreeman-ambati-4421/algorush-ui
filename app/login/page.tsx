@@ -1,15 +1,20 @@
 "use client";
 
+import Image from "next/image";
 import { signIn } from "next-auth/react";
 
 export default function LoginPage() {
   return (
     <main className="flex min-h-screen items-center justify-center px-4">
-      <div className="card w-[min(360px,100%)] p-8 text-center">
-        <div className="mx-auto mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-brand-soft">
-          <span className="text-lg font-bold text-brand">A</span>
-        </div>
-        <h1 className="text-xl font-semibold text-slate-50">AlgoRush</h1>
+      <div className="card w-[min(380px,100%)] p-8 text-center">
+        <Image
+          src="/logo.png"
+          alt="AlgoRush - Systematic Investing Engine"
+          width={818}
+          height={228}
+          priority
+          className="mx-auto mb-6 h-auto w-[260px] max-w-full"
+        />
         <p className="mt-2 mb-6 text-sm text-slate-500">
           Sign in with an allow-listed Google account
         </p>

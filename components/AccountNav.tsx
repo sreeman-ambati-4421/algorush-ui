@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import type { Account } from "@/lib/db";
@@ -9,11 +10,8 @@ export default function AccountNav({ accounts }: { accounts: Account[] }) {
 
   return (
     <div className="flex items-center gap-2">
-      <Link href="/" className="mr-1 flex items-center gap-2">
-        <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-brand-soft text-sm font-bold text-brand">
-          A
-        </span>
-        <span className="hidden text-sm font-semibold text-slate-100 sm:inline">AlgoRush</span>
+      <Link href="/" className="mr-1 flex items-center">
+        <Image src="/logo-mark.png" alt="AlgoRush" width={806} height={172} priority className="h-6 w-auto sm:h-7" />
       </Link>
 
       <div className="hidden items-center gap-1 sm:flex">
